@@ -5,23 +5,27 @@ export type CityProps = {
   name: string;
   longitude: number;
   latitude: number;
-}
+};
 
 export type CityAPIResponse = {
   id: string;
   name: string;
   sys: {
     country?: string;
-  },
+  };
   coord: {
     lon: number;
     lat: number;
-  }
-}
+  };
+};
 
-export async function getCityByNameService(name: string): Promise<CityProps[] | []> {
+export async function getCityByNameService(
+  name: string
+): Promise<CityProps[] | []> {
   try {
-    const { data } = await api.get<CityAPIResponse>(`/weather?q=${name}`);
+    const { data } = await api.get<CityAPIResponse>(
+      `/weather?q=${name}&appid=${process.env.EXPO_PUBLIC_WEATHER_APP_ID}`
+    );
 
     const city = {
       id: data.id,
