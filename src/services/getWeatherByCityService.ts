@@ -18,32 +18,37 @@ export interface WeatherAPIResponseProps {
       feels_like: number;
       humidity: number;
       temp_kf: number;
-    },
+    };
     wind: {
       speed: number;
     };
     weather: {
       description: string;
       main: WeatherIconsKeysProps;
-    }[]
+    }[];
   }[];
 }
 
 type SearchCityWeatherProps = {
   latitude: number;
   longitude: number;
-}
+};
 
 export type WeatherResponseProps = {
   today: {
     weather: WeatherTodayProps;
     details: WeatherDetailsProps;
-  },
+  };
   nextDays: DayProps[];
-}
+};
 
-export async function getWeatherByCityService({ latitude, longitude }: SearchCityWeatherProps): Promise<WeatherResponseProps> {
-  const { data } = await api.get<WeatherAPIResponseProps>(`/forecast?lat=${latitude}&lon=${longitude}`);
+export async function getWeatherByCityService({
+  latitude,
+  longitude,
+}: SearchCityWeatherProps): Promise<WeatherResponseProps> {
+  const { data } = await api.get<WeatherAPIResponseProps>(
+    `/forecast?lat=${latitude}&lon=${longitude}`
+  );
   const { main, weather, wind, pop } = data.list[0];
 
   const today = {
@@ -59,16 +64,16 @@ export async function getWeatherByCityService({ latitude, longitude }: SearchCit
       probability: `${Math.ceil(pop * 100)}%`,
       wind_speed: `${wind.speed}km/h`,
       humidity: `${main.humidity}%`,
-      temp_kf: `${Math.floor(main.temp_kf)}`
-    }
-  }
+      temp_kf: `${Math.floor(main.temp_kf)}`,
+    },
+  };
 
   const days = getNextDays();
   const daysAdded: string[] = [];
   const nextDays: DayProps[] = [];
 
   data.list.forEach((item: any) => {
-    const day = dayjs(new Date(item.dt_txt)).format('DD/MM');
+    const day = dayjs(new Date(item.dt_txt)).format("DD/MM");
 
     if (days.includes(day) && !daysAdded.includes(day)) {
       daysAdded.push(day);
@@ -78,14 +83,16 @@ export async function getWeatherByCityService({ latitude, longitude }: SearchCit
       const details = weatherIcons[status];
 
       nextDays.push({
-        day: dayjs(new Date(item.dt_txt)).format('ddd'),
+        day: dayjs(new Date(item.dt_txt)).format("ddd"),
         min: `${Math.floor(item.main.temp_min)}ºc`,
         max: `${Math.ceil(item.main.temp_max)}ºc`,
         weather: item.weather[0].description,
-        icon: details.icon_day
+        icon: details.icon_day,
       });
     }
   });
 
-  return { today, nextDays }
+  console.log(today, nextDays);
+
+  return { today, nextDays };
 }
