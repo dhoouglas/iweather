@@ -92,7 +92,7 @@ export async function getWeatherByCityService({
     }
   });
 
-  console.log(today, nextDays);
+  // console.log(today, nextDays);
 
   return { today, nextDays };
 }
