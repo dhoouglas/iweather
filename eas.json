@@ -5,10 +5,17 @@
   },
   "build": {
     "preview": {
+      "autoIncrement": true,
       "android": {
-        "distribution": "internal"
+        "distribution": "internal",
+        "autoIncrement": "versionCode"
       }
     },
-    "production": {}
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "autoIncrement": "versionCode"
+      }
+    }
   }
 }
