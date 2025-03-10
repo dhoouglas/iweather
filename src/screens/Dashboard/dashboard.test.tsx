@@ -1,5 +1,4 @@
 import {
-  act,
   fireEvent,
   render,
   screen,
@@ -23,24 +22,23 @@ describe("Screen: Dashboard", () => {
 
     await saveStorageCity(city);
   });
-  it("should be show city weather", async () => {
+
+  it("should show city weather", async () => {
     jest.spyOn(api, "get").mockResolvedValue({ data: mockWeatherAPIResponse });
 
     render(<Dashboard />);
 
-    await waitFor(() =>
-      expect(
-        screen.findByText(/rio do sul/i, {}, { timeout: 3000 })
-      ).toBeTruthy()
-    );
+    await waitFor(() => {
+      expect(screen.getByText(/rio do sul/i)).toBeTruthy();
+    });
   });
 
-  it("should be show another selected weather city", async () => {
+  it("should show another selected weather city", async () => {
     jest
       .spyOn(api, "get")
-      .mockResolvedValueOnce({ data: mockWeatherAPIResponse })
-      .mockResolvedValueOnce({ data: mockCityApiResponse })
-      .mockResolvedValueOnce({ data: mockWeatherAPIResponse });
+      .mockResolvedValueOnce({ data: mockWeatherAPIResponse }) // 1ª chamada - cidade salva
+      .mockResolvedValueOnce({ data: mockCityApiResponse }) // 2ª chamada - buscar cidade digitada
+      .mockResolvedValueOnce({ data: mockWeatherAPIResponse }); // 3ª chamada - novo clima
 
     render(<Dashboard />);
 
@@ -48,19 +46,15 @@ describe("Screen: Dashboard", () => {
 
     const cityName = "São Paulo";
 
-    await waitFor(() =>
-      act(() => {
-        const search = screen.getByTestId("search-input");
-        fireEvent.changeText(search, cityName);
-      })
-    );
+    const search = screen.getByTestId("search-input");
+    fireEvent.changeText(search, cityName);
 
-    await waitFor(() =>
-      act(() => {
-        fireEvent.press(screen.getByText(cityName, { exact: false }));
-      })
-    );
+    await waitFor(() => {
+      fireEvent.press(screen.getByText(cityName, { exact: false }));
+    });
 
-    expect(screen.getByText(cityName, { exact: false })).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.getByText(cityName, { exact: false })).toBeTruthy();
+    });
   });
 });
