@@ -47,5 +47,8 @@ jobs:
           package: npm
           token: ${{ secrets.EAS_EXPO_TOKEN }}
 
+      - name: Install dependencies
+        run: npm install
+
       - name: Build
         run: eas build --platform android --profile preview --non-interactive --no-wait
