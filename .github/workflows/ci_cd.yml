@@ -50,5 +50,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+
       - name: Build
-        run: eas build --non-interactive
+        run: eas build --platform android --non-interactive --no-wait
